@@ -1,0 +1,97 @@
+import { get, onValue, ref, remove, set, update } from "firebase/database";
+import './App.css';
+import { db } from "./config/firebase";
+import { useState,useEffect } from "react";
+import { uid } from "uid";
+
+function App() {
+  const [projects, setProjects] = useState([]);
+  const [name,setName] = useState();
+
+  useEffect(() => {
+    const query = ref(db, "Events");
+    return onValue(query, (snapshot) => {
+      const data = snapshot.val();
+
+      if (snapshot.exists()) {
+        Object.values(data).map((project) => {
+          setProjects((projects) => [...projects, project]);
+        });
+      }
+    });
+  }, []);
+  const nameChangeHandler = (event) => {
+    setName(event.target.value);
+  }
+  const buttonClickHandler = () => {
+    //write
+    
+      const uuid = uid();
+      set(ref(db, `Events/${uuid}`), {
+        name,
+        uuid,
+      });
+      //setProjects((prevProj) => [...prevProj, { name: name, uuid: uuid }]);
+      setName("");
+    
+  }
+  const getClickHandler = async (event) => {
+    const snapshot = await get(ref(db, "Events/a7961dc0cdc"));
+    snapshot.forEach((data) => {
+      console.log(data.val());
+    });
+  }
+  const deleteClickHandler = (todo) => {
+    //delete
+    remove(ref(db, `Events/${todo.uuid}`));
+    const temp = [...projects];
+    const filt = temp.filter((item) => item.uuid !== todo.uuid);
+    setProjects(filt);
+    setName("");
+  }
+
+  const updateHandler = (todo) => {
+    update(ref(db, `Events/${todo.uuid}`), {
+      name:"Test",
+      uuid:todo.uuid,
+    });
+    const temp = [...projects];
+    const newMap = temp.map((item) => {
+      if(item.uuid === todo.uuid){
+        item.name = "Test"
+      }
+      return item;
+    })
+    setProjects(newMap);
+    setName("");
+  }
+  return (
+    <div className="App">
+      <input type="text" value={name} onChange={nameChangeHandler} />
+      <button type="button" onClick={buttonClickHandler}>
+        Save
+      </button>
+      <button type="button" onClick={() => getClickHandler}>
+        Get Value
+      </button>
+
+      {projects.map((project, index) => (
+        <>
+          <p>{project.date}</p>
+          <p>{project.image}</p>
+          <p>{project.description}</p>
+          <p>{project.name}</p>
+          <p>{project.uuid}</p>
+          <button type="button" onClick={() => deleteClickHandler(project)}>
+            Delete
+          </button>
+          <button type="button" onClick={() => updateHandler(project)}>
+            Update
+          </button>
+        </>
+      ))}
+    </div>
+  );
+}
+
+export default App;

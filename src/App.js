@@ -7,26 +7,28 @@ import ErrorPage from './components/ErrorPage';
 import Productdetails from './components/Productdetails';
 import RootLayout from './components/RootLayout';
 import HomePage from './components/HomePage';
+import Course from './components/Course';
 // import Inputfor from './components/Inputfor';
 
 function App() {
-  const router= createBrowserRouter([
-    {
-      path:"/",
-      element: <RootLayout/>,
-      errorElement: <ErrorPage/>,
-      children:[
-        {path:"/", element:<HomePage/>},
-        {path:"/product", element:<Product/>},
-        {path:"/product/:productId", element:<Productdetails/>}
-      ]
+  // const router= createBrowserRouter([
+  //   {
+  //     path:"/",
+  //     element: <RootLayout/>,
+  //     errorElement: <ErrorPage/>,
+  //     children:[
+  //       {path:"/", element:<HomePage/>},
+  //       {path:"/product", element:<Product/>},
+  //       {path:"/product/:productId", element:<Productdetails/>}
+  //     ]
 
-    }
-   ]);
+  //   }
+  //  ]);
    return (
      <div className="App">
-      <RouterProvider router={router}/>
+      {/* <RouterProvider router={router}/> */}
       {/* <Inputfor/> */}
+      <Course/>
      </div>
    );
  

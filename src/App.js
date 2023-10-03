@@ -1,14 +1,32 @@
-import './App.css';
-import Inputfor from './components/Inputfor'
-function App() {
 
-  //  const arr1=[1,2,3];
-  //  const l=arr1.length;
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import './App.css';
+import Home from './components/Home';
+import Product from './components/Product'
+import ErrorPage from './components/ErrorPage';
+import Productdetails from './components/Productdetails';
+import RootLayout from './components/RootLayout';
+import HomePage from './components/HomePage';
+// import Inputfor from './components/Inputfor';
+
+function App() {
+  const router= createBrowserRouter([
+    {
+      path:"/",
+      element: <RootLayout/>,
+      errorElement: <ErrorPage/>,
+      children:[
+        {path:"/", element:<HomePage/>},
+        {path:"/product", element:<Product/>},
+        {path:"/product/:productId", element:<Productdetails/>}
+      ]
+
+    }
+   ]);
    return (
      <div className="App">
-      {/* {l==0 && <p>Nothing in the Array</p>}
-      {l>0 && <p>Array element are {arr1}</p>} */}
-      <Inputfor/>
+      <RouterProvider router={router}/>
+      {/* <Inputfor/> */}
      </div>
    );
  
